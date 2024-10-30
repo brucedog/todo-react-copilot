@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 db.serialize(() => {
-  db.run("CREATE TABLE todos (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT)");
+  db.run("CREATE TABLE todos (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, date TEXT, time TEXT)");
 });
 
 app.get('/todos', (req, res) => {
@@ -24,13 +24,13 @@ app.get('/todos', (req, res) => {
 });
 
 app.post('/todos', (req, res) => {
-  const { text } = req.body;
-  db.run("INSERT INTO todos (text) VALUES (?)", [text], function(err) {
+  const { text, date, time } = req.body;
+  db.run("INSERT INTO todos (text, date, time) VALUES (?, ?, ?)", [text, date, time], function(err) {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
-    res.json({ id: this.lastID, text });
+    res.json({ id: this.lastID, text, date, time });
   });
 });
 
